@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new mongoose.Schema({
-    name: String,
+    // username: String,
     email: { 
         type: String, 
         required: true, 
@@ -10,7 +11,7 @@ const UserSchema = new mongoose.Schema({
         lowercase: true, 
         match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
     },
-    password: String,
+    // password: String,
     role: { 
         type: String, 
         enum: ["student"], 
@@ -25,6 +26,8 @@ const UserSchema = new mongoose.Schema({
         default: false 
     },
 });
+
+UserSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", UserSchema)
 
