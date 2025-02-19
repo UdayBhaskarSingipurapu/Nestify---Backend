@@ -9,6 +9,12 @@ const HostelSchema = new mongoose.Schema({
         type: String, 
         required: true 
     }, 
+    rooms : [
+        {
+            type : mongoose.Schema.ObjectId,
+            ref : "Room"
+        }
+    ],
     totalRooms: { 
         type: Number, 
         required: true 
@@ -17,7 +23,7 @@ const HostelSchema = new mongoose.Schema({
         type: Number, 
         default: 0 
     }, 
-    admin: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "Owner", required: true },
 });
 
 const Hostel = mongoose.model("Hostel", HostelSchema);

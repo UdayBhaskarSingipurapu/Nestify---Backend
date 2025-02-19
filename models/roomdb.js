@@ -26,8 +26,8 @@ const RoomSchema = new mongoose.Schema({
     },
     students: [
         { 
-            type: mongoose.Schema.
-            Types.ObjectId, ref: "User" 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User" 
         }
     ], 
 });

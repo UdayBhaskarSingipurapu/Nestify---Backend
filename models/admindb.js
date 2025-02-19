@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose");
 
-const AdminSchema = new mongoose.Schema({
-    name: { 
+
+const OwnerSchema = new mongoose.Schema({
+    username: { 
             type: String, 
             required: true 
         },
@@ -11,11 +13,13 @@ const AdminSchema = new mongoose.Schema({
     },
     role: { 
         type: String, 
-        enum: ["admin"], 
-        default: "admin" 
+        enum: ["owner"], 
+        default: "owner" 
     }, 
 });
 
-const Admin = mongoose.model("Admin", AdminSchema);
+OwnerSchema.plugin(passportLocalMongoose);
 
-module.exports = Admin;
+const Owner = mongoose.model("Owner", OwnerSchema);
+
+module.exports = Owner;

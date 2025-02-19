@@ -6,7 +6,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/userdb');
 const userRouter = require('./API/userApi');
+const ownerApi = require('./API/ownerApi')
 const session = require('express-session');
+const Owner = require('./models/admindb');
+
 
 const port = 5050
 main()
@@ -39,8 +42,14 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());           
 passport.deserializeUser(User.deserializeUser());
 
+passport.use(new LocalStrategy(Owner.authenticate()));   
+
+passport.serializeUser(Owner.serializeUser());           
+passport.deserializeUser(Owner.deserializeUser());
+
 
 app.use('/user', userRouter);
+app.use('/owner', ownerApi);
 
 app.listen((port), () => {
     console.log(`Server is running on ${port}`);
