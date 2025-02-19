@@ -9,6 +9,7 @@ const userRouter = require('./API/userApi');
 const ownerApi = require('./API/ownerApi')
 const session = require('express-session');
 const Owner = require('./models/admindb');
+const googleAuthRouter = require('./auth/googleAuth');
 
 
 const port = 5050
@@ -31,7 +32,12 @@ app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodie
 app.use(session({
     secret: process.env.SECRET,  // Change this to a secure secret
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,      // Sets cookie expiration to 7 days
+        maxAge: 7 * 24 * 60 * 60 * 1000,                    // Sets max cookie age to 7 days
+        httpOnly: true,                                     // Ensures the cookie is accessible only by the web server
+    },
 }));
 
 // Passport configuration for user authentication
@@ -50,6 +56,7 @@ passport.deserializeUser(Owner.deserializeUser());
 
 app.use('/user', userRouter);
 app.use('/owner', ownerApi);
+app.use('/auth/google', googleAuthRouter);
 
 app.listen((port), () => {
     console.log(`Server is running on ${port}`);

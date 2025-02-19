@@ -23,7 +23,17 @@ const HostelSchema = new mongoose.Schema({
         type: Number, 
         default: 0 
     }, 
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "Owner", required: true },
+    owner: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Owner", 
+        required: true 
+    },
+    reviews : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Review"
+        }
+    ],
 });
 
 const Hostel = mongoose.model("Hostel", HostelSchema);
