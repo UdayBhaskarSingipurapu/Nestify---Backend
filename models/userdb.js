@@ -3,7 +3,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new mongoose.Schema({
     username: String,
-    googleId : String,
+    googleId: String,
     email: { 
         type: String, 
         required: true, 
@@ -11,6 +11,11 @@ const UserSchema = new mongoose.Schema({
         trim: true, 
         lowercase: true, 
         match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
+    },
+    contact: {
+        type: String, 
+        required: true, 
+        match: [/^\d{10}$/, "Enter a valid contact number"]
     },
     role: { 
         type: String, 
@@ -25,10 +30,22 @@ const UserSchema = new mongoose.Schema({
         type: Boolean, 
         default: false 
     },
+    visitors: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Visitor"
+        }
+    ],
+    maintenanceRequests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Maintenance"
+        }
+    ]
 });
 
 UserSchema.plugin(passportLocalMongoose);
 
-const User = mongoose.model("User", UserSchema)
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

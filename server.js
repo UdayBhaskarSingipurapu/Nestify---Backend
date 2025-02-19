@@ -10,6 +10,7 @@ const ownerApi = require('./API/ownerApi')
 const session = require('express-session');
 const Owner = require('./models/admindb');
 const googleAuthRouter = require('./auth/googleAuth');
+const ExpressError = require('./utils/ExpressError');
 
 
 const port = 5050
@@ -57,6 +58,19 @@ passport.deserializeUser(Owner.deserializeUser());
 app.use('/user', userRouter);
 app.use('/owner', ownerApi);
 app.use('/auth/google', googleAuthRouter);
+
+
+
+app.all("*", (req, res, next) => {
+    next(new ExpressError("Page Not Found", 404));        // Passes a 404 error to the error-handling middleware
+  });
+  
+  // Error-handling middleware
+  app.use((err, req, res, next) => {
+    const { message = "Something went wrong", statusCode = 500 } = err; // Extracts error details
+    res.render("error.ejs", { message, statusCode });     // Renders an error page
+  });
+
 
 app.listen((port), () => {
     console.log(`Server is running on ${port}`);

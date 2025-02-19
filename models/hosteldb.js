@@ -9,6 +9,10 @@ const HostelSchema = new mongoose.Schema({
         type: String, 
         required: true 
     }, 
+    image: {
+        url : String,
+        filename : String,
+    },
     rooms : [
         {
             type : mongoose.Schema.ObjectId,
@@ -23,10 +27,13 @@ const HostelSchema = new mongoose.Schema({
         type: Number, 
         default: 0 
     }, 
+    fees : {
+        type : Number,
+        required : true
+    },
     owner: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Owner", 
-        required: true 
+        ref: "Owner",  
     },
     reviews : [
         {
@@ -34,6 +41,18 @@ const HostelSchema = new mongoose.Schema({
             ref : "Review"
         }
     ],
+    visitors : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Visitor"
+        }
+    ],
+    maintainanceRequests : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Maintenance"
+        }
+    ]
 });
 
 const Hostel = mongoose.model("Hostel", HostelSchema);
