@@ -16,20 +16,16 @@ const RoomSchema = new mongoose.Schema({
         enum: ["single", "double", "triple"], 
         required: true 
     },
-    capacity: { 
-        type: Number, 
-        required: true 
-    },
     occupied: { 
-        type: Number, 
-        default: 0 
+        type: Boolean, 
+        default: false 
     },
     students: [
         { 
             type: mongoose.Schema.Types.ObjectId, 
             ref: "User" 
         }
-    ], 
+    ],
 });
 
 const Room = mongoose.model("Room", RoomSchema);

@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new mongoose.Schema({
-    username: String,
+    username: {
+        type : String,
+        required : true
+    },
     googleId: String,
     email: { 
         type: String, 
@@ -26,9 +29,14 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Room" 
     },
-    feesPaid: { 
-        type: Boolean, 
-        default: false 
+    parentName : {
+        type : String,
+        required : true
+    },
+    parentContact : {
+        type: String, 
+        required: true, 
+        match: [/^\d{10}$/, "Enter a valid contact number"]
     },
     visitors: [
         {

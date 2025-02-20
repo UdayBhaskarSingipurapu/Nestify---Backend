@@ -19,6 +19,10 @@ const VisitorSchema = new mongoose.Schema({
         required: true, 
         match: [/^\d{10}$/, "Enter a valid contact number"]
     },
+    relatedTo : {
+        type : String,
+        required : true
+    },
     status: { 
         type: String, 
         enum: ["pending", "approved", "rejected"], 

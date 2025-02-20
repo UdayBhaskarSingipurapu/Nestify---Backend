@@ -4,9 +4,10 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const OwnerSchema = new mongoose.Schema({
     username: { 
-            type: String, 
-            required: true 
-        },
+        type: String, 
+        required: true 
+    },
+    googleId: String,
     email: { 
         type: String, 
         required: true,  

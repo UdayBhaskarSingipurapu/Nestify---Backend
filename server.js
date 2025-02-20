@@ -68,7 +68,7 @@ app.all("*", (req, res, next) => {
   // Error-handling middleware
   app.use((err, req, res, next) => {
     const { message = "Something went wrong", statusCode = 500 } = err; // Extracts error details
-    res.render("error.ejs", { message, statusCode });     // Renders an error page
+    res.send({message , statusCode});     // Renders an error page
   });
 
 

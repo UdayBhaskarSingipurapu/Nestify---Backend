@@ -5,10 +5,24 @@ const HostelSchema = new mongoose.Schema({
         type: String, 
         required: true, 
     }, 
-    location: { 
-        type: String, 
-        required: true 
-    }, 
+    addressLine : {
+        doorNo :{
+            type : String,
+            required : true
+        },
+        street :{
+            type : String,
+            required : true
+        },
+        city :{
+            type : String,
+            required : true
+        },
+        state : {
+            type : String,
+            required : true
+        }
+    },  
     image: {
         url : String,
         filename : String,
@@ -19,18 +33,6 @@ const HostelSchema = new mongoose.Schema({
             ref : "Room"
         }
     ],
-    totalRooms: { 
-        type: Number, 
-        required: true 
-    }, 
-    availableRooms: { 
-        type: Number, 
-        default: 0 
-    }, 
-    fees : {
-        type : Number,
-        required : true
-    },
     owner: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Owner",  
