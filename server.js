@@ -11,6 +11,8 @@ const session = require('express-session');
 const Owner = require('./models/admindb');
 const googleAuthRouter = require('./auth/googleAuth');
 const ExpressError = require('./utils/ExpressError');
+const reviewRouter = require('./API/reviewApi');
+const appReviewRouter = require('./API/appReview');
 
 
 const port = 5050
@@ -58,6 +60,8 @@ passport.deserializeUser(Owner.deserializeUser());
 app.use('/user', userRouter);
 app.use('/owner', ownerApi);
 app.use('/auth/google', googleAuthRouter);
+app.use('/newReview', reviewRouter);
+app.use('/newAppReview', appReviewRouter);
 
 
 

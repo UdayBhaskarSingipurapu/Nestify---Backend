@@ -5,7 +5,6 @@ const RoomSchema = new mongoose.Schema({
     hostel: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Hostel", 
-        required: true 
     }, 
     roomNumber: { 
         type: String, 
