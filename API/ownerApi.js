@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
+const multer  = require('multer')
 const Owner = require('../models/admindb');
 const passport = require('passport');
+const {storage} = require("../cloudConfig.js");
+const upload = multer({ storage });
 
-router.post('/signup', async (req, res) => {
-    let { username, email, password } = req.body;
-    let newUser = new Owner({ username, email });
+router.post('/signup', upload.single("profileImage"), async (req, res) => {
+    let { username, email, password, contact } = req.body;
+    let profileImage = req.file ? { url: req.file.path, filename: req.file.filename } : null;
+    let newUser = new User({username, email, contact, profileImage});
     try {
         let registeredUser = await Owner.register(newUser, password);
         if (registeredUser) {

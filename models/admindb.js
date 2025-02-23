@@ -12,6 +12,10 @@ const OwnerSchema = new mongoose.Schema({
         type: String, 
         required: true,  
     },
+    profileImage : {
+        url : String,
+        filename : String,
+    },
     contact : {
         type: String, 
         required: true, 

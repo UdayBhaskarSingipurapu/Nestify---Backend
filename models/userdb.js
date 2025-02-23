@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema({
         lowercase: true, 
         match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
     },
+    profileImage : {
+        url : String,
+        filename : String,
+    },
     contact: {
         type: String, 
         required: true, 

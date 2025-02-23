@@ -1,7 +1,10 @@
 const express = require("express");
+const multer  = require('multer')
 const Hostel = require('../models/hosteldb')
 const Owner = require("../models/admindb");
 const router = express.Router();
+const {storage} = require("../cloudConfig.js");
+const upload = multer({ storage })
 
 // -------------------------------------
 // GET all hostels (For users)
@@ -78,15 +81,22 @@ router.get("/owner/:ownerId", async (req, res) => {
 // POST: Create a new hostel (Only for authenticated owners)
 // -------------------------------------
 // Notice we no longer accept an "owner" field in the body; instead we use req.owner.
-router.post("/createhostel", async (req, res) => {
+router.post("/createhostel", upload.single("image"), async (req, res) => {
     try {
         // Ensure that an owner is authenticated.
         if (!req.owner) {
             return res.status(403).json({ message: "Access denied. Only owners can add hostels." });
         }
-
+        if (!req.file) {
+            return res.status(400).json({ message: "Image upload failed. Please provide an image." });
+        }
         // Extract hostel details from the request body.
-        const { name, addressLine, image, rooms, totalRooms, availableRooms, fees } = req.body;
+        const { name, addressLine, rooms, totalRooms, availableRooms, fees } = req.body;
+        
+        const image = {
+            url: req.file.path,  
+            filename: req.file.filename,
+        }
 
         // Create a new hostel with the authenticated owner's _id.
         const newHostel = new Hostel({
