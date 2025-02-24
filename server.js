@@ -6,13 +6,14 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/userdb');
 const userRouter = require('./API/userApi');
-const ownerApi = require('./API/ownerApi')
+const ownerRouter = require('./API/ownerApi')
 const session = require('express-session');
 const Owner = require('./models/admindb');
 const googleAuthRouter = require('./auth/googleAuth');
 const ExpressError = require('./utils/ExpressError');
 const reviewRouter = require('./API/reviewApi');
 const appReviewRouter = require('./API/appReview');
+const cors = require('cors');
 
 
 const port = 5050
@@ -31,6 +32,7 @@ async function main() {
 app.use(express.json());  // ✅ Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies (form submissions)
 
+app.use(cors());
 
 app.use(session({
     secret: process.env.SECRET,  // Change this to a secure secret
@@ -58,7 +60,7 @@ passport.deserializeUser(Owner.deserializeUser());
 
 
 app.use('/user', userRouter);
-app.use('/owner', ownerApi);
+app.use('/owner', ownerRouter);
 app.use('/auth/google', googleAuthRouter);
 app.use('/newReview', reviewRouter);
 app.use('/newAppReview', appReviewRouter);

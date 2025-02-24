@@ -2,23 +2,22 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const multer  = require('multer')
 const User = require('../models/userdb');
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const {storage} = require("../cloudConfig.js");
 const upload = multer({ storage });
 
 
 router.post('/signup', upload.single("profileImage"), async (req, res) => {
-    let { username, email, password, contact } = req.body;
+    let { username, email, password, contact, parentName, parentContact } = req.body;
     let profileImage = req.file ? { url: req.file.path, filename: req.file.filename } : null;
-    let newUser = new User({username, email, contact, profileImage});
+    let newUser = new User({username, email, contact, profileImage, parentName, parentContact});
     try {
         let registeredUser = await User.register(newUser, password);
         if(registeredUser){
-            res.send({message : "User registered successfully", payload : registeredUser});
+            return res.status(200).json({ message: "User registered successfully", payload: registeredUser });
         }
     } catch(err){
-        res.send({message : "User registeration unsuccessfull", payload : err});
+        res.status(401).json({message : "Something went wrong", payload : err});
     }
 
 });
@@ -41,10 +40,10 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/all', async(req, res) => {
-    let users = await User.find();
-    res.send({message : "All users", payload : users});
-})
+// router.get('/all', async(req, res) => {
+//     let users = await User.find();
+//     res.send({message : "All users", payload : users});
+// })
 
 router.get('/logout', (req, res) => {
     req.logout((err) => {
@@ -68,7 +67,7 @@ router.get('/:id', async ( req, res) => {
 router.put('/edit/:id', async (req, res) => {
     try {
         const { id } = req.params; 
-        const { username, email, password } = req.body; 
+        const { username, email, password, contact } = req.body; 
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -76,7 +75,7 @@ router.put('/edit/:id', async (req, res) => {
 
         if (username) user.username = username;
         if (email) user.email = email;
-
+        if (contact) user.contact = contact;
         if (password) {
             await user.setPassword(password); 
         }

@@ -9,9 +9,6 @@ const upload = multer({ storage })
 // -------------------------------------
 // GET all hostels (For users)
 // -------------------------------------
-// This endpoint is public. Optionally, if the request includes
-// req.user (authenticated user) or req.owner (authenticated owner),
-// you could use that info to tailor the response.
 router.get("/", async (req, res) => {
     try {
         // You could log authentication info if needed:
@@ -28,8 +25,6 @@ router.get("/", async (req, res) => {
 // -------------------------------------
 // GET single hostel details (For users)
 // -------------------------------------
-// This endpoint is public. Both authenticated users (req.user)
-// and owners (req.owner) can access hostel details.
 router.get("/:id", async (req, res) => {
     try {
         const hostel = await Hostel.findById(req.params.id)
@@ -50,8 +45,6 @@ router.get("/:id", async (req, res) => {
 // -------------------------------------
 // GET all hostels owned by the authenticated owner
 // -------------------------------------
-// This route uses req.owner. Only an authenticated owner may access this route,
-// and they can only fetch hostels that belong to them.
 router.get("/owner/:ownerId", async (req, res) => {
     try {
         // Ensure that an owner is authenticated.
@@ -65,7 +58,8 @@ router.get("/owner/:ownerId", async (req, res) => {
 
         const hostels = await Hostel.find({ owner: req.params.ownerId })
             .populate("rooms")
-            .populate("reviews");
+            .populate("reviews")
+            .populate("maintainanceRequests");
 
         if (!hostels.length) {
             return res.status(404).json({ message: "No hostels found for this owner" });
@@ -80,25 +74,21 @@ router.get("/owner/:ownerId", async (req, res) => {
 // -------------------------------------
 // POST: Create a new hostel (Only for authenticated owners)
 // -------------------------------------
-// Notice we no longer accept an "owner" field in the body; instead we use req.owner.
 router.post("/createhostel", upload.single("image"), async (req, res) => {
     try {
-        // Ensure that an owner is authenticated.
         if (!req.owner) {
             return res.status(403).json({ message: "Access denied. Only owners can add hostels." });
         }
         if (!req.file) {
             return res.status(400).json({ message: "Image upload failed. Please provide an image." });
         }
-        // Extract hostel details from the request body.
         const { name, addressLine, rooms, totalRooms, availableRooms, fees } = req.body;
         
         const image = {
             url: req.file.path,  
             filename: req.file.filename,
         }
-
-        // Create a new hostel with the authenticated owner's _id.
+        
         const newHostel = new Hostel({
             name,
             addressLine,
@@ -107,7 +97,7 @@ router.post("/createhostel", upload.single("image"), async (req, res) => {
             totalRooms,
             availableRooms,
             fees,
-            owner: req.owner._id  // Automatically set the owner from the authentication middleware
+            owner: req.owner._id  
         });
 
         await newHostel.save();
@@ -121,7 +111,6 @@ router.post("/createhostel", upload.single("image"), async (req, res) => {
 // -------------------------------------
 // PUT: Update hostel details (Only for authenticated owners)
 // -------------------------------------
-// Only the owner who created the hostel can update it.
 router.put("/:id", async (req, res) => {
     try {
         const hostel = await Hostel.findById(req.params.id);
@@ -144,7 +133,6 @@ router.put("/:id", async (req, res) => {
 // -------------------------------------
 // DELETE: Delete hostel (Only for authenticated owners)
 // -------------------------------------
-// Only the owner who created the hostel can delete it.
 router.delete("/:id", async (req, res) => {
     try {
         const hostel = await Hostel.findById(req.params.id);

@@ -13,10 +13,10 @@ router.post('/signup', upload.single("profileImage"), async (req, res) => {
     try {
         let registeredUser = await Owner.register(newUser, password);
         if (registeredUser) {
-            res.send({ message: "User registered successfully", payload: registeredUser });
+            return res.status(200).json({ message: "User registered successfully", payload: registeredUser });
         }
     } catch (err) {
-        res.send({ message: "User registration unsuccessful", payload: err });
+        res.status(401).json({message : "Something went wrong", payload : err});
     }
 });
 
@@ -60,7 +60,7 @@ router.get('/:id', async (req, res) => {
         if (!user) {
             res.status(404).send({ message: "User not found" });
         } else {
-            res.send({ message: "User found", payload: user });
+            return res.status(200).json({ message: "User found", payload: user });
         }
     } catch (err) {
         res.status(500).send({ message: "Error retrieving user", payload: err });
