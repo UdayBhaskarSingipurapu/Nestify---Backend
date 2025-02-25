@@ -7,9 +7,11 @@ const {storage} = require("../cloudConfig.js");
 const upload = multer({ storage });
 
 router.post('/signup', upload.single("profileImage"), async (req, res) => {
+    console.log(req.body.profileImage)
+    console.log(req.file);
     let { username, email, password, contact } = req.body;
     let profileImage = req.file ? { url: req.file.path, filename: req.file.filename } : null;
-    let newUser = new User({username, email, contact, profileImage});
+    let newUser = new Owner({username, email, contact, profileImage});
     try {
         let registeredUser = await Owner.register(newUser, password);
         if (registeredUser) {
@@ -20,22 +22,24 @@ router.post('/signup', upload.single("profileImage"), async (req, res) => {
     }
 });
 
-router.post('/login', (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
-        if (err) {
-            return res.status(500).json({ message: "Error during authentication", payload: err });
+router.post('/login', async (req, res) => {
+    try {
+        let {username, password} = req.body;
+        const user = await Owner.findOne({username : username});
+        if(!user){
+            res.status(401).json({message : "User not found"});
         }
-        if (!user) {
-            return res.status(401).json({ message: "Invalid credentials", payload: info });
+        const isMatch = await user.authenticate(password);
+        if(!isMatch){
+            res.status(401).json({message : "Username or Password is incorrect"});
         }
-
-        req.logIn(user, (loginErr) => {
-            if (loginErr) {
-                return res.status(500).json({ message: "Login failed", payload: loginErr });
-            }
-            return res.status(200).json({ message: "User logged in successfully", payload: user });
+        req.login(user, (err) => { 
+            if (err) return res.status(500).json({ message: "Login failed", err });
+            res.status(200).json({ message: "User logged in successfully", payload : user });
         });
-    })(req, res, next);
+    } catch (error) {
+        res.status(500).json({ message: "Database error", error });
+    }
 });
 
 router.get('/all', async (req, res) => {

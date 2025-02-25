@@ -32,7 +32,10 @@ async function main() {
 app.use(express.json());  // ✅ Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies (form submissions)
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",  // Frontend URL
+    credentials: true  // Allow cookies and authentication headers
+}));
 
 app.use(session({
     secret: process.env.SECRET,  // Change this to a secure secret
