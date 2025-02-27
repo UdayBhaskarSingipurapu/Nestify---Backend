@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const HostelSchema = new mongoose.Schema({
-    name: { 
+    hostelname: { 
         type: String, 
         required: true, 
     }, 
@@ -23,7 +23,7 @@ const HostelSchema = new mongoose.Schema({
             required : true
         }
     },  
-    image: {
+    hostelimage: {
         url : String,
         filename : String,
     },
@@ -41,12 +41,6 @@ const HostelSchema = new mongoose.Schema({
         {
             type : mongoose.Schema.Types.ObjectId,
             ref : "Review"
-        }
-    ],
-    visitors : [
-        {
-            type : mongoose.Schema.Types.ObjectId,
-            ref : "Visitor"
         }
     ],
     maintainanceRequests : [

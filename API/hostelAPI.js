@@ -74,39 +74,53 @@ router.get("/owner/:ownerId", async (req, res) => {
 // -------------------------------------
 // POST: Create a new hostel (Only for authenticated owners)
 // -------------------------------------
-router.post("/createhostel", upload.single("image"), async (req, res) => {
+router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) => {
     try {
-        if (!req.owner) {
-            return res.status(403).json({ message: "Access denied. Only owners can add hostels." });
+        console.log("Request body:", req.body);
+        console.log("Request params:", req.params);
+        console.log("Request file:", req.file);
+
+        const id = req.params.id; 
+        let owner = await Owner.findById(id);
+        if (!owner) {
+            return res.status(404).json({ message: "User Not found" });
         }
+        console.log("Onwer : " ,owner)
         if (!req.file) {
             return res.status(400).json({ message: "Image upload failed. Please provide an image." });
         }
-        const { name, addressLine, rooms, totalRooms, availableRooms, fees } = req.body;
-        
-        const image = {
-            url: req.file.path,  
+
+        const { hostelname, doorNo, street, city, state } = req.body;
+        console.log("Parsed Data: ", { hostelname, doorNo, street, city, state });
+
+        const hostelImage = {
+            url: req.file.path,
             filename: req.file.filename,
-        }
-        
+        };
+
+        const addressLine = {
+            doorNo,
+            street,
+            city,
+            state
+        };
+
         const newHostel = new Hostel({
-            name,
+            hostelname,
             addressLine,
-            image,
-            rooms,
-            totalRooms,
-            availableRooms,
-            fees,
-            owner: req.owner._id  
+            image: hostelImage,
+            owner: id
         });
 
         await newHostel.save();
 
-        res.status(201).json({ message: "Hostel created successfully", hostel: newHostel });
+        res.status(200).json({ message: "Hostel created successfully", payload: newHostel });
     } catch (error) {
+        console.error("Error:", error);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // -------------------------------------
 // PUT: Update hostel details (Only for authenticated owners)

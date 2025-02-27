@@ -13,6 +13,7 @@ const googleAuthRouter = require('./auth/googleAuth');
 const ExpressError = require('./utils/ExpressError');
 const reviewRouter = require('./API/reviewApi');
 const appReviewRouter = require('./API/appReview');
+const hostelRouter = require('./API/hostelAPI')
 const cors = require('cors');
 
 
@@ -65,6 +66,7 @@ passport.deserializeUser(Owner.deserializeUser());
 app.use('/user', userRouter);
 app.use('/owner', ownerRouter);
 app.use('/auth/google', googleAuthRouter);
+app.use('/hostel', hostelRouter);
 app.use('/newReview', reviewRouter);
 app.use('/newAppReview', appReviewRouter);
 

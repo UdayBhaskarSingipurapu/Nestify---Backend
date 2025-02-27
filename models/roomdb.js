@@ -10,14 +10,21 @@ const RoomSchema = new mongoose.Schema({
         type: String, 
         required: true, 
     },
-    roomType: { 
-        type: String, 
-        enum: ["single", "double", "triple"], 
+    roomCapacity: { 
+        type: Number,
         required: true 
     },
-    occupied: { 
+    airConditioned: { 
         type: Boolean, 
         default: false 
+    },
+    fees : {
+        type : Number,
+        required : true
+    }, 
+    occupied :{
+        type: Number,
+        required: true 
     },
     students: [
         { 
