@@ -3,7 +3,7 @@ const multer  = require('multer')
 const Hostel = require('../models/hosteldb')
 const Owner = require("../models/admindb");
 const router = express.Router();
-const {storage} = require("../cloudConfig.js");
+const {storage} = require("../config/cloudConfig");
 const upload = multer({ storage })
 
 // -------------------------------------

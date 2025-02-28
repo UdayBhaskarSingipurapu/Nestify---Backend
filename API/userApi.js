@@ -3,12 +3,11 @@ const router = express.Router({ mergeParams: true });
 const multer  = require('multer')
 const User = require('../models/userdb');
 const passport = require('passport');
-const {storage, cloudinary} = require("../cloudConfig.js");
+const {storage, cloudinary} = require("../config/cloudConfig");
 const upload = multer({ storage });
 
 
 router.post('/signup', upload.single("profileImage"), async (req, res) => {
-    console.log(req.body.profileImage)
     console.log(req.file);
     let { username, email, password, contact, parentName, parentContact } = req.body;
     let profileImage = req.file ? { url: req.file.path, filename: req.file.filename } : null;
@@ -24,21 +23,17 @@ router.post('/signup', upload.single("profileImage"), async (req, res) => {
 });
 
 
-router.post("/login", async (req, res) => {
-    try {
-        const user = await User.findOne({ username: req.body.username });
-        if (!user) return res.status(401).json({ message: "User not found" });
-    
-        const isValid = await user.authenticate(req.body.password);
-        if (!isValid) return res.status(401).json({ message: "Incorrect password" });
-        req.login(user, (err) => { // Manually log in
-            if (err) return res.status(500).json({ message: "Login failed", err });
-            res.status(200).json({ message: "User logged in successfully", payload : user });
+router.post('/login', (req, res, next) => {
+    passport.authenticate('user-local', (err, user, info) => {
+        if (err) return res.status(500).json({ message: 'Authentication error', error: err });
+        if (!user) return res.status(401).json({ message: info.message });
+        req.login(user, (loginErr) => {
+            if (loginErr) return res.status(500).json({ message: 'Session error', error: loginErr });
+            return res.status(200).json({ message: 'User logged in successfully', payload : user });
         });
-    } catch (error) {
-        res.status(500).json({ message: "Database error", error });
-    }
+    })(req, res, next);
 });
+
 
 
 

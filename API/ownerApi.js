@@ -3,7 +3,7 @@ const router = express.Router({ mergeParams: true });
 const multer  = require('multer')
 const Owner = require('../models/admindb');
 const passport = require('passport');
-const {storage} = require("../cloudConfig.js");
+const {storage} = require("../config/cloudConfig");
 const upload = multer({ storage });
 
 router.post('/signup', upload.single("profileImage"), async (req, res) => {
@@ -22,24 +22,15 @@ router.post('/signup', upload.single("profileImage"), async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
-    try {
-        let {username, password} = req.body;
-        const user = await Owner.findOne({username : username});
-        if(!user){
-            res.status(401).json({message : "User not found"});
-        }
-        const isMatch = await user.authenticate(password);
-        if(!isMatch){
-            res.status(401).json({message : "Username or Password is incorrect"});
-        }
-        req.login(user, (err) => { 
-            if (err) return res.status(500).json({ message: "Login failed", err });
-            res.status(200).json({ message: "User logged in successfully", payload : user });
+router.post('/login', (req, res, next) => {
+    passport.authenticate('owner-local', (err, user, info) => {
+        if (err) return res.status(500).json({ message: 'Authentication error', error: err });
+        if (!user) return res.status(401).json({ message: info.message });
+        req.login(user, (loginErr) => {
+            if (loginErr) return res.status(500).json({ message: 'Session error', error: loginErr });
+            return res.status(200).json({ message: 'User logged in successfully', payload : user });
         });
-    } catch (error) {
-        res.status(500).json({ message: "Database error", error });
-    }
+    })(req, res, next);
 });
 
 router.get('/all', async (req, res) => {

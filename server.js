@@ -50,17 +50,29 @@ app.use(session({
 }));
 
 // Passport configuration for user authentication
-app.use(passport.initialize());                         
-app.use(passport.session());                            
-passport.use(new LocalStrategy(User.authenticate()));   
+app.use(passport.initialize());
+app.use(passport.session());
 
-passport.serializeUser(User.serializeUser());           
-passport.deserializeUser(User.deserializeUser());
+// Custom serialization/deserialization
+passport.serializeUser((user, done) => {
+    done(null, { 
+        _id: user._id,
+        type: user instanceof User ? 'user' : 'owner' 
+    });
+});
 
-passport.use(new LocalStrategy(Owner.authenticate()));   
+passport.deserializeUser(async (obj, done) => {
+    try {
+        const model = obj.type === 'user' ? User : Owner;
+        const user = await model.findById(obj._id);
+        done(null, user);
+    } catch (err) {
+        done(err);
+    }
+});
 
-passport.serializeUser(Owner.serializeUser());           
-passport.deserializeUser(Owner.deserializeUser());
+passport.use('user-local', new LocalStrategy(User.authenticate()));
+passport.use('owner-local', new LocalStrategy(Owner.authenticate()));
 
 
 app.use('/user', userRouter);
@@ -74,14 +86,13 @@ app.use('/newAppReview', appReviewRouter);
 
 app.all("*", (req, res, next) => {
     next(new ExpressError("Page Not Found", 404));        // Passes a 404 error to the error-handling middleware
-  });
-  
+});
+
   // Error-handling middleware
-  app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
     const { message = "Something went wrong", statusCode = 500 } = err; // Extracts error details
     res.send({message , statusCode});     // Renders an error page
-  });
-
+});
 
 app.listen((port), () => {
     console.log(`Server is running on ${port}`);
