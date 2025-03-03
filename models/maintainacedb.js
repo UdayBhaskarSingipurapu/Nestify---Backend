@@ -4,12 +4,12 @@ const MaintenanceSchema = new mongoose.Schema({
     student: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User",  
-        required: true 
+        
     }, 
     hostel: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Hostel", 
-        required: true 
+        
     },
     issueTitle: { 
         type: String, 

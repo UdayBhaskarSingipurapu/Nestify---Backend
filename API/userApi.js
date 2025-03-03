@@ -55,7 +55,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/:id', async ( req, res) => {
     let {id} = req.params;
-    let user = await User.findById(id);
+    let user = await User.findById(id).populate("maintenanceRequests");
     if(!user){
         res.send({message : "User not found"});
     }

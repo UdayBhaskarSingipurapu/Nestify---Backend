@@ -18,6 +18,7 @@ router.post('/signup', upload.single("profileImage"), async (req, res) => {
             return res.status(200).json({ message: "User registered successfully", payload: registeredUser });
         }
     } catch (err) {
+        console.log(err);
         res.status(401).json({message : "Something went wrong", payload : err});
     }
 });
@@ -51,7 +52,7 @@ router.get('/logout', (req, res) => {
 router.get('/:id', async (req, res) => {
     let { id } = req.params;
     try {
-        let user = await Owner.findById(id);
+        let user = await Owner.findById(id).populate("hostels");
         if (!user) {
             res.status(404).send({ message: "User not found" });
         } else {
