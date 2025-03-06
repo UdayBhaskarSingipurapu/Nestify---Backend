@@ -5,8 +5,9 @@ const Owner = require('../models/admindb');
 const passport = require('passport');
 const {storage} = require("../config/cloudConfig");
 const upload = multer({ storage });
+const ownerValidationSchema = require('../validateSchema/admin/validateAdmin')
 
-router.post('/signup', upload.single("profileImage"), async (req, res) => {
+router.post('/signup', upload.single("profileImage"), ownerValidationSchema, async (req, res) => {
     console.log(req.body.profileImage)
     console.log(req.file);
     let { username, email, password, contact } = req.body;

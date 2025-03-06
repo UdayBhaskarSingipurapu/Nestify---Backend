@@ -5,12 +5,12 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const OwnerSchema = new mongoose.Schema({
     username: { 
         type: String, 
-        required: true 
+        // required: true 
     },
     googleId: String,
     email: { 
         type: String, 
-        required: true,  
+        // required: true,  
     },
     profileImage : {
         url : String,
@@ -18,7 +18,7 @@ const OwnerSchema = new mongoose.Schema({
     },
     contact : {
         type: String, 
-        required: true, 
+        // required: true, 
         match: [/^\d{10}$/, "Enter a valid contact number"]
     },
     role: { 

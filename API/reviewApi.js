@@ -3,7 +3,7 @@ const Review = require('../models/reviewdb');
 const Hostel = require('../models/hosteldb');
 const router = express.Router({mergeParams : true});
 
-router.post('/hostel/:id', async (req, res) => {
+router.post('/new', async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
             return res.status(401).json({ message: "Unauthorized. Please log in." });
