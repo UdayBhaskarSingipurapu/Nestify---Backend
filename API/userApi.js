@@ -63,10 +63,10 @@ router.get('/:id', async ( req, res) => {
     res.send({message : "user", payload : user});
 })
 
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id/personal', async (req, res) => {
     try {
         const { id } = req.params; 
-        const { username, email, password, contact } = req.body; 
+        const { username, email, contact } = req.body; 
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -75,9 +75,6 @@ router.put('/edit/:id', async (req, res) => {
         if (username) user.username = username;
         if (email) user.email = email;
         if (contact) user.contact = contact;
-        if (password) {
-            await user.setPassword(password); 
-        }
 
         await user.save().then((res) => {
             res.json({ message: 'User updated successfully', user: user });
@@ -91,6 +88,40 @@ router.put('/edit/:id', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
+router.put('/edit/:id/profileImage', upload.single("profileImage"), async (req, res) => {
+    try {
+        let { id } = req.params;
+        const user = await User.findById(id);
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if(req.file) {
+            user.profileImage = { url: req.file.path, filename: req.file.filename };
+        }
+        await user.save();
+        res.status(200).json({ message: "Profile image updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.put('/edit/:id/password', async(req, res) => {
+    try {
+        let { id } = req.params;
+        const user = await User.findById(id);
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        let {password} = req.body;
+        await user.setPassword(password);
+        await user.save();
+        return res.status(200).json({message : "Password updated successfully", payload : user});
+    }
+    catch(err) {
+        return res.status(500).json({message : "Internal Server Error"});
+    }
+})
 
 
 module.exports = router;
