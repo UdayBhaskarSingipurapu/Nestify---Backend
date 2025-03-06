@@ -4,13 +4,13 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const UserSchema = new mongoose.Schema({
     username: {
         type : String,
-        required : true
+        // required : true
     },
     googleId: String,
     email: { 
         type: String, 
-        required: true, 
-        unique: true, 
+        // required: true, 
+        // unique: true, 
         trim: true, 
         lowercase: true, 
         match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     contact: {
         type: String, 
-        required: true, 
+        // required: true, 
         match: [/^\d{10}$/, "Enter a valid contact number"]
     },
     role: { 
@@ -35,11 +35,11 @@ const UserSchema = new mongoose.Schema({
     },
     parentName : {
         type : String,
-        required : true
+        // required : true
     },
     parentContact : {
         type: String, 
-        required: true, 
+        // required: true, 
         match: [/^\d{10}$/, "Enter a valid contact number"]
     },
     visitors: [

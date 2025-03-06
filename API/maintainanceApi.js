@@ -5,6 +5,21 @@ const router = express.Router({mergeParams : true});
 // const {isUser, isOwner} = require('../middlewares/authentication/auth');
 const User = require('../models/userdb');
 
+router.get('/all/:hosteId', async(req, res) => {
+    try {
+        const {hostelId} = req.params;
+        const hostel = await Hostel.findById(hostelId);
+
+        if(!hostel){
+            res.status(404).json({message : "Hostel not found"});
+        }
+        const maintainanceReq = hostel.maintainancerequests;
+        res.status(200).json({message : "All maintainace Requests", payload : maintainanceReq});
+    }
+    catch(err){
+        res.status(500).json({message : "Failed to fetch"});
+    }
+})
 
 router.post('/new', async (req, res) => {
     try{

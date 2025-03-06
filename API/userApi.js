@@ -5,9 +5,10 @@ const User = require('../models/userdb');
 const passport = require('passport');
 const {storage, cloudinary} = require("../config/cloudConfig");
 const upload = multer({ storage });
+const userValidationSchema = require('../validateSchema/user/validateUser.js')
 
 
-router.post('/signup', upload.single("profileImage"), async (req, res) => {
+router.post('/signup', upload.single("profileImage"), userValidationSchema, async (req, res) => {
     console.log(req.file);
     let { username, email, password, contact, parentName, parentContact } = req.body;
     let profileImage = req.file ? { url: req.file.path, filename: req.file.filename } : null;

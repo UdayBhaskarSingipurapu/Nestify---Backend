@@ -17,6 +17,8 @@ const hostelRouter = require('./API/hostelAPI');
 const maintainceRouter = require('./API/maintainanceApi');
 const cors = require('cors');
 
+ 
+
 
 const port = 5050
 main()
@@ -80,9 +82,9 @@ app.use('/user', userRouter);
 app.use('/owner', ownerRouter);
 app.use('/auth/google', googleAuthRouter);
 app.use('/hostel', hostelRouter);
-app.use('/hostel/:id/newReview', reviewRouter);
+app.use('/hostel/:id/review', reviewRouter);
 app.use('/newAppReview', appReviewRouter);
-app.use('/maintaince', maintainceRouter);
+app.use('/hostel/:id/maintainance', maintainceRouter);
 
 
 
