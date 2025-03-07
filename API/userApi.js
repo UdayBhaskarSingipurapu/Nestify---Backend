@@ -65,6 +65,7 @@ router.get('/:id', async ( req, res) => {
 
 router.put('/edit/:id/personal', async (req, res) => {
     try {
+        console.log(req.body);
         const { id } = req.params; 
         const { username, email, contact } = req.body; 
         const user = await User.findById(id);
@@ -76,13 +77,8 @@ router.put('/edit/:id/personal', async (req, res) => {
         if (email) user.email = email;
         if (contact) user.contact = contact;
 
-        await user.save().then((res) => {
-            res.json({ message: 'User updated successfully', user: user });
-        })
-        .catch((err) => {
-            res.json({message : "invalid credentials", error : err})
-        });
-
+        await user.save();
+        res.json({ message: 'User updated successfully', payload: user });
     } catch (error) {
         console.error('Error updating user:', error);
         res.status(500).json({ message: 'Internal Server Error' });
