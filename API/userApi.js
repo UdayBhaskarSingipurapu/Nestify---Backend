@@ -65,6 +65,7 @@ router.get('/:id', async ( req, res) => {
 
 router.put('/edit/:id/personal', async (req, res) => {
     try {
+
         console.log(req.body);
         const { id } = req.params; 
         const { username, email, contact, parentName, parentContact } = req.body; 
@@ -111,13 +112,14 @@ router.put('/edit/:id/profileImage', upload.single("profileImage"), async (req, 
 
 router.put('/edit/:id/password', async(req, res) => {
     try {
+        console.log(req.body);
         let { id } = req.params;
         const user = await User.findById(id);
         if(!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        let {password} = req.body;
-        await user.setPassword(password);
+        let {newPassword} = req.body;
+        await user.setPassword(newPassword);
         await user.save();
         return res.status(200).json({message : "Password updated successfully", payload : user});
     }
