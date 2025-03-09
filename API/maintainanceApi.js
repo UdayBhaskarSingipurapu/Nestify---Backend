@@ -21,7 +21,7 @@ router.get('/all/:hosteId', async(req, res) => {
     }
 })
 
-router.post('/new', async (req, res) => {
+router.post('/:id/new', async (req, res) => {
     try{
         const {id} = req.params;
         let hostel = await Hostel.findById(id);
@@ -29,7 +29,7 @@ router.post('/new', async (req, res) => {
             return res.status(404).json({message : "Hostel not found"});
         }
         const {issueTitle, issueDescription} = req.body;
-        const user = req.user;
+        const user = id;
         const newMaintainanceReq = {
             student : user._id,
             hostel : hostel._id,
