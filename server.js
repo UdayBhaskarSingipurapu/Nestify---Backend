@@ -82,9 +82,9 @@ app.use('/user', userRouter);
 app.use('/owner', ownerRouter);
 app.use('/auth/google', googleAuthRouter);
 app.use('/hostel', hostelRouter);
-app.use('/hostel/:id/review', reviewRouter);
+app.use('/hostel/review', reviewRouter);
 app.use('/newAppReview', appReviewRouter);
-app.use('/hostel/:id/maintainance', maintainceRouter);
+app.use('/hostel/maintainance', maintainceRouter);
 
 
 
