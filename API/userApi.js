@@ -38,12 +38,6 @@ router.post('/login', (req, res, next) => {
 
 
 
-
-// router.get('/all', async(req, res) => {
-//     let users = await User.find();
-//     res.send({message : "All users", payload : users});
-// })
-
 router.get('/logout', (req, res) => {
     req.logout((err) => {
         if(err){
@@ -79,12 +73,8 @@ router.put('/edit/:id/personal', async (req, res) => {
         if (parentName) user.parentName = parentName;
         if (parentContact) user.parentContact = parentContact;
 
-        user.save().then((res) => {
-            res.json({ message: 'User updated successfully', user: user });
-        })
-        .catch((err) => {
-            res.json({message : "invalid credentials", error : err})
-        });
+        await user.save();
+        res.status(200).json({ message: 'User updated successfully', payload: user });
 
     } catch (error) {
         console.error('Error updating user:', error);
@@ -103,7 +93,7 @@ router.put('/edit/:id/profileImage', upload.single("profileImage"), async (req, 
             user.profileImage = { url: req.file.path, filename: req.file.filename };
         }
         await user.save();
-        res.status(200).json({ message: "Profile image updated successfully", user });
+        res.status(200).json({ message: "Profile image updated successfully", payload : user });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -116,7 +106,7 @@ router.put('/edit/:id/password', async(req, res) => {
         if(!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        let {password} = req.body;
+        let { password } = req.body;
         await user.setPassword(password);
         await user.save();
         return res.status(200).json({message : "Password updated successfully", payload : user});
