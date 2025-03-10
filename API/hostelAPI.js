@@ -76,22 +76,17 @@ router.get("/owner/:ownerId", async (req, res) => {
 // -------------------------------------
 router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) => {
     try {
-        // console.log("Request body:", req.body);
-        // console.log("Request params:", req.params);
-        // console.log("Request file:", req.file);
-
         const id = req.params.id; 
         let owner = await Owner.findById(id);
         if (!owner) {
             return res.status(404).json({ message: "User Not found" });
         }
-        // console.log("Onwer : " ,owner)
+
         if (!req.file) {
             return res.status(400).json({ message: "Image upload failed. Please provide an image." });
         }
 
         const { hostelname, doorNo, street, city, state } = req.body;
-        // console.log("Parsed Data: ", { hostelname, doorNo, street, city, state });
 
         const hostelImage = {
             url: req.file.path,
@@ -113,13 +108,16 @@ router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) 
         });
 
         await newHostel.save();
+        owner.hostels.push(newHostel._id);
+        await owner.save();
 
-        res.status(200).json({ message: "Hostel created successfully", payload: newHostel });
+        res.status(200).json({ message: "Hostel created successfully", payload: {owner, newHostel} });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 
 // -------------------------------------
