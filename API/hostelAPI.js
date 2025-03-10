@@ -76,22 +76,22 @@ router.get("/owner/:ownerId", async (req, res) => {
 // -------------------------------------
 router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) => {
     try {
-        console.log("Request body:", req.body);
-        console.log("Request params:", req.params);
-        console.log("Request file:", req.file);
+        // console.log("Request body:", req.body);
+        // console.log("Request params:", req.params);
+        // console.log("Request file:", req.file);
 
         const id = req.params.id; 
         let owner = await Owner.findById(id);
         if (!owner) {
             return res.status(404).json({ message: "User Not found" });
         }
-        console.log("Onwer : " ,owner)
+        // console.log("Onwer : " ,owner)
         if (!req.file) {
             return res.status(400).json({ message: "Image upload failed. Please provide an image." });
         }
 
         const { hostelname, doorNo, street, city, state } = req.body;
-        console.log("Parsed Data: ", { hostelname, doorNo, street, city, state });
+        // console.log("Parsed Data: ", { hostelname, doorNo, street, city, state });
 
         const hostelImage = {
             url: req.file.path,

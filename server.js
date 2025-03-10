@@ -15,9 +15,9 @@ const reviewRouter = require('./API/reviewApi');
 const appReviewRouter = require('./API/appReview');
 const hostelRouter = require('./API/hostelAPI');
 const maintainceRouter = require('./API/maintainanceApi');
+const roomRouter = require('./API/roomApi');
 const cors = require('cors');
 
- 
 
 
 const port = 5050
@@ -85,6 +85,7 @@ app.use('/hostel', hostelRouter);
 app.use('/hostel/review', reviewRouter);
 app.use('/newAppReview', appReviewRouter);
 app.use('/hostel/maintainance', maintainceRouter);
+app.use('/room', roomRouter);
 
 
 

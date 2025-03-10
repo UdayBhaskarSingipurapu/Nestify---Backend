@@ -17,11 +17,10 @@ router.get(
         if (!req.user) {
             return res.status(401).json({ message: "Google authentication failed" });
         }
-        const { user, token } = req.user;
+        const { user } = req.user;
         res.json({
             message: "Google login successful",
-            user,
-            token,
+            payload : user,
         });
     }
 );

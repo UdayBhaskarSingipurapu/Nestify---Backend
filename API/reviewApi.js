@@ -5,9 +5,6 @@ const router = express.Router({mergeParams : true});
 
 router.post('/:id/new', async (req, res) => {
     try {
-        if (!req.isAuthenticated()) {
-            return res.status(401).json({ message: "Unauthorized. Please log in." });
-        }
         const { id } = req.params;  
         const hostel = await Hostel.findById(id);
         if(!hostel) {
@@ -18,7 +15,7 @@ router.post('/:id/new', async (req, res) => {
         hostel.reviews.push(review);
         await review.save();
         await hostel.save();
-        res.status(201).json({ message: "Review created successfully" });
+        res.status(200).json({ message: "Review created successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

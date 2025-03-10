@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const RoomSchema = new mongoose.Schema({
     hostel: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -24,7 +23,7 @@ const RoomSchema = new mongoose.Schema({
     }, 
     occupied :{
         type: Number,
-        required: true 
+        default : 0
     },
     students: [
         { 
