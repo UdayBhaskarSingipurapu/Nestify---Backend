@@ -76,7 +76,7 @@ router.get("/owner/:ownerId", async (req, res) => {
 // -------------------------------------
 router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) => {
     try {
-        const id = req.params.id; 
+        const {id} = req.params; 
         let owner = await Owner.findById(id);
         if (!owner) {
             return res.status(404).json({ message: "User Not found" });
@@ -110,8 +110,8 @@ router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) 
         await newHostel.save();
         owner.hostels.push(newHostel._id);
         await owner.save();
-
-        res.status(200).json({ message: "Hostel created successfully", payload: {owner, newHostel} });
+        const hostels = await Hostel.find({ owner: owner._id });
+        res.status(200).json({ message: "Hostel created successfully", payload: {owner, hostels} });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: error.message });

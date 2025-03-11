@@ -32,7 +32,7 @@ router.post('/login', async (req, res, next) => {
         req.login(user, async (loginErr) => {
             if (loginErr) return res.status(500).json({ message: 'Session error', error: loginErr });
             try {
-                const hostels = await Hostel.find({ ownerId: user._id });
+                const hostels = await Hostel.find({ owner: user._id });
                 return res.status(200).json({ 
                     message: 'Owner logged in successfully', 
                     payload: { user, hostels } 
