@@ -54,7 +54,7 @@ passport.use(new GoogleStrategy({
                         googleId: profile.id,
                         username: profile.displayName,
                         email: profile.emails[0].value,
-                        role: "user"
+                        role: "student"
                     });
                     await user.save();
                 }

@@ -16,13 +16,14 @@ router.post("/:hostelId/add", async (req, res) => {
 
         const roomsWithHostelId = roomsData.map(room => ({
             ...room,
-            hostel: hostelId
+            hostel: hostelId,
+            airConditioned: room.airConditioned === "yes" ? true : false
         }));
 
         const insertedRooms = await Room.insertMany(roomsWithHostelId);
         const roomIds = insertedRooms.map(room => room._id);
-        await Hostel.findByIdAndUpdate(hostelId, { $push: { rooms: { $each: roomIds } } });
-        res.status(200).json({ message: "Rooms added successfully", payload: insertedRooms });
+        const updatedHostel = await Hostel.findByIdAndUpdate(hostelId, { $push: { rooms: { $each: roomIds } } });
+        res.status(200).json({ message: "Rooms added successfully", payload: updatedHostel });
 
     } catch (error) {
         console.error("Error adding rooms:", error);

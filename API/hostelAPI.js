@@ -55,6 +55,7 @@ router.get("/owner/:ownerId", async (req, res) => {
         if (req.owner._id.toString() !== req.params.ownerId) {
             return res.status(403).json({ message: "Access denied. You can only view your own hostels." });
         }
+        const owner = await Owner.findById(req.params.ownerId);
 
         const hostels = await Hostel.find({ owner: req.params.ownerId })
             .populate("rooms")
@@ -65,7 +66,7 @@ router.get("/owner/:ownerId", async (req, res) => {
             return res.status(404).json({ message: "No hostels found for this owner" });
         }
 
-        res.status(200).json(hostels);
+        res.status(200).json({message : "All hostels" , payload : {owner, hostels}});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
