@@ -48,15 +48,17 @@ router.get("/:id", async (req, res) => {
 router.get("/owner/:ownerId", async (req, res) => {
     try {
         // Ensure that an owner is authenticated.
-        if (!req.owner) {
-            return res.status(403).json({ message: "Access denied. Only owners can access their hostels." });
-        }
-        // Verify that the ownerId in the URL matches the authenticated owner.
-        if (req.owner._id.toString() !== req.params.ownerId) {
-            return res.status(403).json({ message: "Access denied. You can only view your own hostels." });
-        }
+        // if (!req.owner) {
+        //     return res.status(403).json({ message: "Access denied. Only owners can access their hostels." });
+        // }
+        // // Verify that the ownerId in the URL matches the authenticated owner.
+        // if (req.owner._id.toString() !== req.params.ownerId) {
+        //     return res.status(403).json({ message: "Access denied. You can only view your own hostels." });
+        // }
         const owner = await Owner.findById(req.params.ownerId);
-
+        if (!owner) {
+            return res.status(404).json({ message: "owner not found" });
+        }
         const hostels = await Hostel.find({ owner: req.params.ownerId })
             .populate("rooms")
             .populate("reviews")
@@ -65,8 +67,7 @@ router.get("/owner/:ownerId", async (req, res) => {
         if (!hostels.length) {
             return res.status(404).json({ message: "No hostels found for this owner" });
         }
-
-        res.status(200).json({message : "All hostels" , payload : {owner, hostels}});
+        return res.status(200).json({message : "All hostels" , payload : {owner, hostels}});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
