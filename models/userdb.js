@@ -42,16 +42,16 @@ const UserSchema = new mongoose.Schema({
         // required: true, 
         match: [/^\d{10}$/, "Enter a valid contact number"]
     },
-    visitors: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Visitor"
-        }
-    ],
     maintenanceRequests: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Maintenance"
+        }
+    ],
+    hostelRequests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "hostelJoinRequest"
         }
     ]
 });

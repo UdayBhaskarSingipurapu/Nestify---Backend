@@ -62,7 +62,8 @@ router.get("/owner/:ownerId", async (req, res) => {
         const hostels = await Hostel.find({ owner: req.params.ownerId })
             .populate("rooms")
             .populate("reviews")
-            .populate("maintainanceRequests");
+            .populate("maintainanceRequests")
+            .populate("joinRequests");
 
         if (!hostels.length) {
             return res.status(404).json({ message: "No hostels found for this owner" });

@@ -25,15 +25,28 @@ router.post('/signup', upload.single("profileImage"), userValidationSchema, asyn
 
 
 router.post('/login', (req, res, next) => {
-    passport.authenticate('user-local', (err, user, info) => {
+    passport.authenticate('user-local', async (err, user, info) => {
         if (err) return res.status(500).json({ message: 'Authentication error', error: err });
         if (!user) return res.status(401).json({ message: info.message });
-        req.login(user, (loginErr) => {
+
+        req.login(user, async (loginErr) => {
             if (loginErr) return res.status(500).json({ message: 'Session error', error: loginErr });
-            return res.status(200).json({ message: 'User logged in successfully', payload : user });
+            try {
+                const user = await User.findById(user._id)
+                    .populate("maintenanceRequests")
+                    .populate("joinRequests"); 
+
+                return res.status(200).json({ 
+                    message: 'User logged in successfully', 
+                    payload: user 
+                });
+            } catch (fetchErr) {
+                return res.status(500).json({ message: 'Error fetching user data', error: fetchErr });
+            }
         });
     })(req, res, next);
 });
+
 
 
 

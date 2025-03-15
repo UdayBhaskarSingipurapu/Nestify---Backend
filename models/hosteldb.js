@@ -48,6 +48,12 @@ const HostelSchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : "Maintenance"
         }
+    ],
+    joinRequests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "hostelJoinRequest"
+        }
     ]
 });
 
