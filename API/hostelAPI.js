@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
         // console.log("Authenticated user:", req.user);
         // console.log("Authenticated owner:", req.owner);
 
-        const hostels = await Hostel.find().populate("owner", "username email");
+        const hostels = await Hostel.find().populate("owner", "username email").populate("rooms").populate("reviews");
         res.status(200).json(hostels);
     } catch (error) {
         res.status(500).json({ error: error.message });
