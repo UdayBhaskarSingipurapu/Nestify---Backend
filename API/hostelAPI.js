@@ -5,6 +5,7 @@ const Owner = require("../models/admindb");
 const router = express.Router();
 const {storage} = require("../config/cloudConfig");
 const upload = multer({ storage })
+require('../models/hostelJoindb')
 
 // -------------------------------------
 // GET all hostels (For users)
