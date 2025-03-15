@@ -105,7 +105,7 @@ router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) 
         const newHostel = new Hostel({
             hostelname,
             addressLine,
-            image: hostelImage,
+            hostelimage: hostelImage,
             owner: id
         });
 

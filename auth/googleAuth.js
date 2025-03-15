@@ -14,15 +14,7 @@ router.get(
     "/callback",
     passport.authenticate("google", { session: true }),
     (req, res) => {
-        if (!req.user) {
-            return res.status(401).json({ message: "Google authentication failed" });
-        }
-        const user  = req.user;
-        console.log(user);
-        res.json({
-            message: "Google login successful",
-            payload : user,
-        });
+        res.redirect(`http://localhost:5173/log-in/success?user=${JSON.stringify(req.user)}`);
     }
 );
 
