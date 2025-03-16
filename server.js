@@ -16,6 +16,7 @@ const appReviewRouter = require('./API/appReview');
 const hostelRouter = require('./API/hostelAPI');
 const maintainceRouter = require('./API/maintainanceApi');
 const roomRouter = require('./API/roomApi');
+const hostelJoinRouter = require('./API/hostelJoinApi')
 const cors = require('cors');
 
 
@@ -86,7 +87,7 @@ app.use('/hostel/review', reviewRouter);
 app.use('/newAppReview', appReviewRouter);
 app.use('/hostel/maintainance', maintainceRouter);
 app.use('/room', roomRouter);
-
+app.use('/joinHostel', hostelJoinRouter);
 
 
 app.all("*", (req, res, next) => {

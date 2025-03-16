@@ -4,7 +4,7 @@ const User = require('../models/userdb');
 const Hostel = require('../models/hosteldb');
 const router = express.Router({mergeParams : true});
 
-router.get('/:studentId/:hostelId', async (req, res) => {
+router.post('/:studentId/:hostelId', async (req, res) => {
     try{
         const {studentId, hostelId} = req.params;
         const student = await User.findById(studentId);
@@ -23,7 +23,7 @@ router.get('/:studentId/:hostelId', async (req, res) => {
         hostel.joinRequests.push(savedReq._id);
         await hostel.save();
 
-        res.status(201).json({ message: "Join request sent successfully", request: savedReq });
+        res.status(201).json({ message: "Join request sent successfully", payload: savedReq });
     }    
     catch(err){
 
@@ -74,3 +74,29 @@ router.post('/approve/:requestId', async (req, res) => {
     }
 });
 
+router.post('/reject/:requestId', async (req, res) => {
+    try {
+        const { requestId } = req.params;
+
+        // Find the join request
+        const request = await hostelJoinRequest.findById(requestId);
+        if (!request) {
+            return res.status(404).json({ message: "Join request not found" });
+        }
+
+        // Update request status to "rejected"
+        request.status = "rejected";
+        await request.save();
+
+        // Delete this request from the Hostel collection
+        await Hostel.findByIdAndUpdate(request.hostel, {
+            $pull: { hostelRequests: request._id } 
+        });
+
+        res.status(200).json({ message: "Join request rejected and removed from hostel" });
+
+    } catch (error) {
+        console.error("Error rejecting request:", error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+});
