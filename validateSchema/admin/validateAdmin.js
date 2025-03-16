@@ -30,10 +30,4 @@ const ownerValidationSchema = Joi.object({
     }),
 });
 
-module.exports = (req, res, next) => {
-    const { error } = ownerValidationSchema.validate(req.body);
-    if(error) {
-        return res.status(400).json({ message: error.details[0].message });
-    }
-    next();
-};
+module.exports = ownerValidationSchema

@@ -6,166 +6,39 @@ const router = express.Router();
 const {storage} = require("../config/cloudConfig");
 const upload = multer({ storage })
 require('../models/hostelJoindb')
+const {getAllHostels, getOneHostel, getAllUnderOwner, createNewHostel, updateHostel, deleteHostel} = require('../controllers/hostelController/Hostel');
+const wrapAsync = require("../utils/wrapAsync");
+const { validateHostel } = require("../middlewares/validateHostel");
 
 // -------------------------------------
 // GET all hostels (For users)
 // -------------------------------------
-router.get("/", async (req, res) => {
-    try {
-        // You could log authentication info if needed:
-        // console.log("Authenticated user:", req.user);
-        // console.log("Authenticated owner:", req.owner);
-
-        const hostels = await Hostel.find().populate("owner", "username email").populate("rooms").populate("reviews");
-        res.status(200).json(hostels);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.get("/", wrapAsync(getAllHostels));
 
 // -------------------------------------
 // GET single hostel details (For users)
 // -------------------------------------
-router.get("/:id", async (req, res) => {
-    try {
-        const hostel = await Hostel.findById(req.params.id)
-            .populate("owner", "username email")
-            .populate("rooms")
-            .populate("reviews");
-
-        if (!hostel) {
-            return res.status(404).json({ message: "Hostel not found" });
-        }
-
-        res.status(200).json(hostel);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.get("/:id", wrapAsync(getOneHostel));
 
 // -------------------------------------
 // GET all hostels owned by the authenticated owner
 // -------------------------------------
-router.get("/owner/:ownerId", async (req, res) => {
-    try {
-        // Ensure that an owner is authenticated.
-        // if (!req.owner) {
-        //     return res.status(403).json({ message: "Access denied. Only owners can access their hostels." });
-        // }
-        // // Verify that the ownerId in the URL matches the authenticated owner.
-        // if (req.owner._id.toString() !== req.params.ownerId) {
-        //     return res.status(403).json({ message: "Access denied. You can only view your own hostels." });
-        // }
-        const owner = await Owner.findById(req.params.ownerId);
-        if (!owner) {
-            return res.status(404).json({ message: "owner not found" });
-        }
-        const hostels = await Hostel.find({ owner: req.params.ownerId })
-            .populate("rooms")
-            .populate("reviews")
-            .populate("maintainanceRequests")
-            .populate("joinRequests");
-
-        if (!hostels.length) {
-            return res.status(404).json({ message: "No hostels found for this owner" });
-        }
-        return res.status(200).json({message : "All hostels" , payload : {owner, hostels}});
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.get("/owner/:ownerId", wrapAsync(getAllUnderOwner));
 
 // -------------------------------------
 // POST: Create a new hostel (Only for authenticated owners)
 // -------------------------------------
-router.post("/createhostel/:id", upload.single("hostelImage"), async (req, res) => {
-    try {
-        const {id} = req.params; 
-        let owner = await Owner.findById(id);
-        if (!owner) {
-            return res.status(404).json({ message: "User Not found" });
-        }
-
-        if (!req.file) {
-            return res.status(400).json({ message: "Image upload failed. Please provide an image." });
-        }
-
-        const { hostelname, doorNo, street, city, state } = req.body;
-
-        const hostelImage = {
-            url: req.file.path,
-            filename: req.file.filename,
-        };
-
-        const addressLine = {
-            doorNo,
-            street,
-            city,
-            state
-        };
-
-        const newHostel = new Hostel({
-            hostelname,
-            addressLine,
-            hostelimage: hostelImage,
-            owner: id
-        });
-
-        await newHostel.save();
-        owner.hostels.push(newHostel._id);
-        await owner.save();
-        const hostels = await Hostel.find({ owner: owner._id });
-        res.status(200).json({ message: "Hostel created successfully", payload: {owner, hostels} });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
+router.post("/createhostel/:id", upload.single("hostelImage"), validateHostel, wrapAsync(createNewHostel));
 
 
 // -------------------------------------
 // PUT: Update hostel details (Only for authenticated owners)
 // -------------------------------------
-router.put("/:id", async (req, res) => {
-    try {
-        const hostel = await Hostel.findById(req.params.id);
-        if (!hostel) {
-            return res.status(404).json({ message: "Hostel not found" });
-        }
-
-        // Check if the request comes from an authenticated owner who owns this hostel.
-        if (!req.owner || hostel.owner.toString() !== req.owner._id.toString()) {
-            return res.status(403).json({ message: "Access denied. You do not own this hostel." });
-        }
-
-        const updatedHostel = await Hostel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).json(updatedHostel);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.put("/:ownerId/:hostelId", wrapAsync(updateHostel));
 
 // -------------------------------------
 // DELETE: Delete hostel (Only for authenticated owners)
 // -------------------------------------
-router.delete("/:id", async (req, res) => {
-    try {
-        const hostel = await Hostel.findById(req.params.id);
-        if (!hostel) {
-            return res.status(404).json({ message: "Hostel not found" });
-        }
-
-        // Check that the authenticated owner is the owner of the hostel.
-        if (!req.owner || hostel.owner.toString() !== req.owner._id.toString()) {
-            return res.status(403).json({ message: "Access denied. You do not own this hostel." });
-        }
-
-        await Hostel.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "Hostel deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+router.delete("/:id", wrapAsync(deleteHostel));
 
 module.exports = router;

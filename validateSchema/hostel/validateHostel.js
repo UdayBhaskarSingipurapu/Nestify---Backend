@@ -5,28 +5,25 @@ const hostelValidationSchema = Joi.object({
         "string.empty": "Hostel name is required"
     }),
 
-    addressLine: Joi.object({
-        doorNo: Joi.string().trim().required().messages({
-            "string.empty": "Door number is required"
-        }),
-        street: Joi.string().trim().required().messages({
-            "string.empty": "Street name is required"
-        }),
-        city: Joi.string().trim().required().messages({
-            "string.empty": "City name is required"
-        }),
-        state: Joi.string().trim().required().messages({
-            "string.empty": "State name is required"
-        })
-    }).required(),
+    doorNo: Joi.string().trim().required().messages({
+        "string.empty": "Door number is required"
+    }),
+    street: Joi.string().trim().required().messages({
+        "string.empty": "Street name is required"
+    }),
+    city: Joi.string().trim().required().messages({
+        "string.empty": "City name is required"
+    }),
+    state: Joi.string().trim().required().messages({
+        "string.empty": "State name is required"
+    }),
 
     hostelimage: Joi.object({
         url: Joi.string().uri().optional().messages({
             "string.uri": "Hostel image URL must be a valid URI"
         }),
         filename: Joi.string().optional()
-    }).required(),
-
+    }).optional(),
 });
 
 module.exports = hostelValidationSchema;

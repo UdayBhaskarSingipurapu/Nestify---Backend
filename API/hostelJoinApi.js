@@ -100,3 +100,5 @@ router.post('/reject/:requestId', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error });
     }
 });
+
+module.exports = router;

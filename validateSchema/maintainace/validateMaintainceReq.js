@@ -18,7 +18,8 @@ const maintenanceValidationSchema = Joi.object({
         .messages({
             "string.base": "Status must be a string",
             "any.only": "Status must be one of: pending, in-progress, resolved"
-        }),
+        })
+        .optional()
 });
 
 module.exports = maintenanceValidationSchema;
