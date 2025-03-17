@@ -23,10 +23,11 @@ router.post('/:studentId/:hostelId', async (req, res) => {
         hostel.joinRequests.push(savedReq._id);
         await hostel.save();
 
-        res.status(201).json({ message: "Join request sent successfully", payload: savedReq });
+        return res.status(201).json({ message: "Join request sent successfully", payload: savedReq });
     }    
     catch(err){
-
+        console.log(err)
+        return res.status(500).json({message : "join request failed", payload : err})
     }
 });
 
