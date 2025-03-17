@@ -14,8 +14,7 @@ router.get(
     "/callback",
     passport.authenticate("google", { session: true }),
     (req, res) => {
-        // res.redirect(`http://localhost:5173/log-in/success?user=${JSON.stringify(req.user)}`);
-        res.send(req.user);
+        res.redirect(`http://localhost:5173/log-in/success?user=${JSON.stringify(req.user)}`);
     }
 );
 
