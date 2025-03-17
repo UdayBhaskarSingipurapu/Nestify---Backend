@@ -18,10 +18,13 @@ const maintainceRouter = require('./API/maintainanceApi');
 const roomRouter = require('./API/roomApi');
 const hostelJoinRouter = require('./API/hostelJoinApi')
 const cors = require('cors');
+const MongoStore = require('connect-mongo');
 
 app.use(cors({
-    origin: ["http://localhost:5173","https://nestify-client.vercel.app", "https://nestify-client-z2l2.vercel.app"],  // Frontend URL
-    credentials: true  // Allow cookies and authentication headers
+    origin: "https://nestify-client.vercel.app", 
+    credentials: true,  
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Content-Type, Authorization, X-Requested-With"
 }));
 
 app.get('/', (req, res) => {
@@ -41,21 +44,26 @@ async function main() {
     await mongoose.connect(process.env.DB_URL);           
 }
 
+app.use(session({
+    secret: process.env.SECRET, 
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.DB_URL,
+        collectionName: "sessions",
+        ttl: 7 * 24 * 60 * 60,
+    }),
+    cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000,  
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production" 
+    }
+}));
+
 app.use(express.json());  // ✅ Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies (form submissions)
 
 
-app.use(session({
-    secret: process.env.SECRET,  // Change this to a secure secret
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,      // Sets cookie expiration to 7 days
-        maxAge: 7 * 24 * 60 * 60 * 1000,                    // Sets max cookie age to 7 days
-        httpOnly: true,                                     // Ensures the cookie is accessible only by the web server
-        secure : true
-    },
-}));
 
 // Passport configuration for user authentication
 app.use(passport.initialize());
