@@ -20,7 +20,7 @@ const hostelJoinRouter = require('./API/hostelJoinApi')
 const cors = require('cors');
 
 app.use(cors({
-    origin: "https://nestify-client.vercel.app",  // Frontend URL
+    origin: ["http://localhost:5173","https://nestify-client.vercel.app", "https://nestify-client-z2l2.vercel.app"],  // Frontend URL
     credentials: true  // Allow cookies and authentication headers
 }));
 
