@@ -40,7 +40,7 @@ app.use(express.json());  // ✅ Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies (form submissions)
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://nestify-client-z2l2.vercel.app"],  // Frontend URL
+    origin: "https://nestify-client-z2l2.vercel.app",  // Frontend URL
     credentials: true  // Allow cookies and authentication headers
 }));
 
