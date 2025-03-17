@@ -19,6 +19,11 @@ const roomRouter = require('./API/roomApi');
 const hostelJoinRouter = require('./API/hostelJoinApi')
 const cors = require('cors');
 
+app.use(cors({
+    origin: "https://nestify-client.vercel.app",  // Frontend URL
+    credentials: true  // Allow cookies and authentication headers
+}));
+
 app.get('/', (req, res) => {
     res.send("Nestify Running.....")
 })
@@ -39,10 +44,6 @@ async function main() {
 app.use(express.json());  // ✅ Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded bodies (form submissions)
 
-app.use(cors({
-    origin: "https://nestify-client.vercel.app",  // Frontend URL
-    credentials: true  // Allow cookies and authentication headers
-}));
 
 app.use(session({
     secret: process.env.SECRET,  // Change this to a secure secret
@@ -52,6 +53,7 @@ app.use(session({
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,      // Sets cookie expiration to 7 days
         maxAge: 7 * 24 * 60 * 60 * 1000,                    // Sets max cookie age to 7 days
         httpOnly: true,                                     // Ensures the cookie is accessible only by the web server
+        secure : true
     },
 }));
 
