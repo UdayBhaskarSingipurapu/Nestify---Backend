@@ -19,7 +19,9 @@ const roomRouter = require('./API/roomApi');
 const hostelJoinRouter = require('./API/hostelJoinApi')
 const cors = require('cors');
 
-
+app.get('/', (req, res) => {
+    res.send("Nestify Running.....")
+})
 
 const port = 5050
 main()
