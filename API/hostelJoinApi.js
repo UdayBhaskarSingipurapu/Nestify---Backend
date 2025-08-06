@@ -2,19 +2,22 @@ const express = require('express');
 const hostelJoinRequest = require('../models/hostelJoindb');
 const User = require('../models/userdb');
 const Hostel = require('../models/hosteldb');
+const Room = require('../models/roomdb');
 const router = express.Router({mergeParams : true});
 
-router.post('/:studentId/:hostelId', async (req, res) => {
+router.post('/:studentId/:hostelId/:roomId', async (req, res) => {
     try{
-        const {studentId, hostelId} = req.params;
+        const {studentId, hostelId, roomId} = req.params;
         const student = await User.findById(studentId);
         const hostel = await Hostel.findById(hostelId);
-        if(!student || !hostel){
+        const room = await Room.findById(roomId)
+        if(!student || !hostel || !room){
             return res.status(400).json({message : "Invalid details"});
         }
         const joinReq = new hostelJoinRequest({
             student : studentId,
-            hostel : hostelId
+            hostel : hostelId,
+            room: roomId
         });
         const savedReq = await joinReq.save();
         student.hostelRequests.push(savedReq._id);

@@ -9,6 +9,10 @@ const hostelJoinSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "Hostel"
     },
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Room"
+    },
     status : {
         type: String, 
         enum: ["pending", "approved", "rejected"], 
