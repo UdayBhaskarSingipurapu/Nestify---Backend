@@ -26,7 +26,8 @@ passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: "https://nestify-backend.vercel.app/auth/google/callback",
-        passReqToCallback: true
+        passReqToCallback: true,
+        scope: ['profile', 'email']
     },
     async (request, accessToken, refreshToken, profile, done) => {
         try {
